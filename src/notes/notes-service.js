@@ -21,9 +21,10 @@ const NotesService = {
       .first()
   },
   deleteNote(knex, id) {
-    return knex('noteful_notes')
+    return knex
+      .from('noteful_notes')
       .where({ id })
-      .delete
+      .delete()
   },
   updateNote(knex, id, newNoteFields) {
     return knex('noteful_notes')

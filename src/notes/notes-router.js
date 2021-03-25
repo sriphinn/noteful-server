@@ -2,6 +2,7 @@ const path = require('path')
 const express = require('express')
 const xss = require('xss')
 const NotesService = require('./notes-service')
+const { networkInterfaces } = require('os')
 
 const notesRouter = express.Router()
 const jsonParser = express.json()
@@ -9,7 +10,7 @@ const serializeNote = note => ({
   id: note.id,
   name: xss(note.id),
   modified: note.modified,
-  folder: note.folderId,
+  folder_id: note.folder_id,
   content: xss(note.content)
 })
 
@@ -35,6 +36,8 @@ notesRouter
         })
       }
     }
+    newNote.folder_id = req.body.folder_id
+
     NotesService.insertNote(
       req.app.get('db'),
       newNote
@@ -49,7 +52,7 @@ notesRouter
   })
 
 notesRouter
-  .route('/:node_id')
+  .route('/:note_id')
   .all((req, res, next) => {
     NotesService.getById(
       req.app.get('db'),
